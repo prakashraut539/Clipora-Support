@@ -4,7 +4,7 @@ Clipora is a free Windows x64 clipboard manager, available on Microsoft Store. S
 
 [Get Clipora from Microsoft Store](https://apps.microsoft.com/detail/9NN5TJ6G4T5W?cid=clipora-github)
 
-[Product and interactive demo](https://clipora-privacy-help.khokhani.chatgpt.site/) · [Quick-start guide](https://clipora-privacy-help.khokhani.chatgpt.site/guide.html) · [Privacy policy](https://clipora-privacy-help.khokhani.chatgpt.site/privacy.html)
+[Product and interactive demo](https://clipora.deltabits.in/) · [Quick-start guide](https://clipora.deltabits.in/guide.html) · [Privacy policy](https://clipora.deltabits.in/privacy.html)
 
 ## Report a bug or suggest a feature
 
@@ -16,4 +16,4 @@ Windows may restrict automatic paste into elevated applications; copy and manual
 
 Share the product page with people who need clipboard history. If you use the app, an honest Microsoft Store review is welcome. No incentive or positive rating is required.
 
-[Launch resources and synthetic screenshots](https://clipora-privacy-help.khokhani.chatgpt.site/press.html)
+[Launch resources and synthetic screenshots](https://clipora.deltabits.in/press.html)
