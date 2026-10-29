@@ -59,5 +59,7 @@
       else status.textContent='Copy was unavailable. Convert the edited input and try again, or select the result to copy manually.';
     }finally{busy=false;buttons.copy.removeAttribute('aria-busy');update();}
   });
+  buttons.sample.disabled=false;
+  status.textContent='Paste your text or try the sample.';
   update();
 })();
