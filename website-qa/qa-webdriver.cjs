@@ -140,8 +140,8 @@ async function pages(){
     await demo();await pages();
     await check('Motion running, paused timeline, resume, reveals and progress',async()=>{
       await go();await size(1440,1000);await click('.motion-toggle');
-      for(const s of ['.note','.picture','.link-card','.shortcut','.search-pill i','.privacy-lock','.final-cta svg'])assert.notEqual(await js(s=>getComputedStyle(document.querySelector(s)).animationName,s),'none');
-      assert.equal(await js(()=>getComputedStyle(document.querySelector('.note')).animationPlayState),'running');await click('.motion-toggle');
+      for(const s of ['.search-pill i','.privacy-lock','.final-cta svg'])assert.notEqual(await js(s=>getComputedStyle(document.querySelector(s)).animationName,s),'none');
+      assert.equal(await js(()=>getComputedStyle(document.querySelector('.search-pill i')).animationPlayState),'running');await click('.motion-toggle');
       await d.executeAsyncScript('const done=arguments[arguments.length-1];Promise.all(document.getAnimations().map(a=>a.ready)).then(()=>done(true));');
       const times=()=>js(()=>document.getAnimations().filter(a=>a instanceof CSSAnimation).map(a=>a.currentTime));const t=await times();await new Promise(r=>setTimeout(r,150));assert.deepEqual(await times(),t);assert.equal(await js(()=>getComputedStyle(document.querySelector('.button')).transitionDuration),'0s');
       await click('.motion-toggle');await js(()=>document.querySelector('.final-cta').scrollIntoView({behavior:'instant'}));await wait(()=>js(()=>parseFloat(document.documentElement.style.getPropertyValue('--reading-progress'))>80));await js(()=>document.querySelector('.privacy-copy').scrollIntoView({behavior:'instant'}));await wait(()=>js(()=>document.querySelector('.privacy-copy').classList.contains('is-visible')));

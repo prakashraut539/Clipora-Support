@@ -1,0 +1,186 @@
+{
+  "origin": "https://clipora.deltabits.in",
+  "googleVerification": "AiFMmt74YJn3oNft8SQTHfwkqCk-pG5eY8QBduLfuw8",
+  "bingVerification": "66D1831AD5B53CF56B2853EE4D791245",
+  "pages": [
+    {
+      "file": "index.html",
+      "path": "/",
+      "modified": "2026-10-29",
+      "title": "Free Clipboard Manager for Windows 11 & 10 | Clipora",
+      "description": "Save text, links and images in a searchable clipboard history. Pin useful clips and paste with Ctrl+Alt+V. Free Windows clipboard manager on Microsoft Store."
+    },
+    {
+      "file": "guide.html",
+      "path": "/guide",
+      "modified": "2026-10-29",
+      "title": "Windows Clipboard Guides & Clipora Quick Start",
+      "description": "Learn Windows clipboard history, multiple-item copying, plain-text paste and safe backups. Get practical guides and the Clipora app quick start."
+    },
+    {
+      "file": "support.html",
+      "path": "/support",
+      "modified": "2026-10-29",
+      "title": "Clipora Support: Clipboard Help & Troubleshooting",
+      "description": "Get help with Clipora clipboard history, quick paste, Windows startup and encrypted backups. Find troubleshooting steps or report a bug to the developer."
+    },
+    {
+      "file": "privacy.html",
+      "path": "/privacy",
+      "modified": "2026-10-29",
+      "title": "Clipora Privacy Policy: Clipboard Storage & Data Controls",
+      "description": "Read how Clipora stores and encrypts clipboard history on your Windows PC, handles optional sync and backups, and lets you pause or delete saved clips."
+    },
+    {
+      "file": "press.html",
+      "path": "/press",
+      "modified": "2026-10-29",
+      "title": "Clipora Press Kit: Windows Clipboard Manager & Screenshots",
+      "description": "Explore Clipora, the free Windows clipboard manager. Get product facts, the official logo, app screenshots and links to Microsoft Store and support."
+    },
+    {
+      "file": "guides/clipboard-history-windows.html",
+      "path": "/guides/clipboard-history-windows",
+      "modified": "2026-10-29",
+      "title": "Clipboard History on Windows 11 & 10: How to Open It",
+      "description": "Open clipboard history with Windows + V, find earlier copies and pin useful items. Learn what Windows saves and when a clipboard manager can help.",
+      "heading": "How to open clipboard history on Windows",
+      "kind": "guide"
+    },
+    {
+      "file": "guides/clear-clipboard-windows.html",
+      "path": "/guides/clear-clipboard-windows",
+      "modified": "2026-10-29",
+      "title": "How to Clear the Clipboard & History on Windows",
+      "description": "Clear the current Windows clipboard, remove history entries and deal with pinned items. Understand why clipboard managers keep a separate history.",
+      "heading": "How to clear the clipboard on Windows",
+      "kind": "guide"
+    },
+    {
+      "file": "guides/copy-paste-multiple-items.html",
+      "path": "/guides/copy-paste-multiple-items",
+      "modified": "2026-10-29",
+      "title": "How to Copy and Paste Multiple Items on Windows",
+      "description": "Copy several text snippets or links and paste them in the right place using Windows clipboard history or Clipora’s searchable picker and paste queue.",
+      "heading": "Copy several things. Paste the right one.",
+      "kind": "guide"
+    },
+    {
+      "file": "guides/paste-without-formatting.html",
+      "path": "/guides/paste-without-formatting",
+      "modified": "2026-10-29",
+      "title": "How to Paste Without Formatting on Windows | Clipora",
+      "description": "Paste plain text without source fonts, colors or links. Find app-specific shortcuts, Clipora’s plain-paste action and a private browser text converter.",
+      "heading": "Paste the words. Leave the formatting.",
+      "kind": "guide"
+    },
+    {
+      "file": "guides/backup-clipboard-history.html",
+      "path": "/guides/backup-clipboard-history",
+      "modified": "2026-10-29",
+      "title": "Back Up & Restore Clipboard History with Clipora",
+      "description": "Export an encrypted Clipora backup, test a merge restore and move your clipboard library safely. Learn the limits of Windows account-bound database keys.",
+      "heading": "Back up your clipboard history before you need it.",
+      "kind": "guide"
+    },
+    {
+      "file": "features/text-snippets.html",
+      "path": "/features/text-snippets",
+      "modified": "2026-10-29",
+      "title": "Reusable Text Snippets for Windows | Clipora",
+      "description": "Keep reusable replies and text snippets in Clipora for Windows. Pin favorites, use placeholders and search your library before pasting into your work.",
+      "heading": "Your best replies, ready to reuse.",
+      "kind": "feature"
+    },
+    {
+      "file": "features/image-clipboard.html",
+      "path": "/features/image-clipboard",
+      "modified": "2026-10-29",
+      "title": "Image Clipboard Manager & Offline OCR for Windows | Clipora",
+      "description": "Save copied images in Clipora, preview thumbnails in quick access and extract text with offline Windows OCR. Learn supported formats and practical limits.",
+      "heading": "A clipboard for images, too.",
+      "kind": "feature"
+    },
+    {
+      "file": "tools/paste-as-plain-text.html",
+      "path": "/tools/paste-as-plain-text",
+      "modified": "2026-10-29",
+      "title": "Paste as Plain Text Online — Free Text Tool | Clipora",
+      "description": "Remove rich formatting from copied text in your browser. Preview, copy, clear or undo without uploading your text, saving it or reading the clipboard.",
+      "heading": "Paste as plain text.",
+      "kind": "tool"
+    },
+    {
+      "file": "tools/remove-line-breaks.html",
+      "path": "/tools/remove-line-breaks",
+      "modified": "2026-10-29",
+      "title": "Remove Line Breaks Online — Keep Paragraphs | Clipora",
+      "description": "Join wrapped lines from PDFs or copied text. Keep paragraph breaks or make one line, preview the result and copy it without uploading or saving your text.",
+      "heading": "Fix the line breaks. Keep the meaning.",
+      "kind": "tool"
+    },
+    {
+      "file": "compare/windows-clipboard.html",
+      "path": "/compare/windows-clipboard",
+      "modified": "2026-10-29",
+      "title": "Clipora vs Windows Clipboard History: Which Fits Your Work?",
+      "description": "Compare built-in Windows clipboard history with Clipora’s searchable library, pins, images and backups. Choose the workflow that fits your everyday copying.",
+      "heading": "Windows clipboard or Clipora?",
+      "kind": "comparison"
+    },
+    {
+      "file": "compare/ditto.html",
+      "path": "/compare/ditto",
+      "modified": "2026-10-29",
+      "title": "Clipora vs Ditto Clipboard Manager: Workflow Comparison",
+      "description": "Compare Clipora with Ditto’s documented search, sticky clips, special paste, scripts and backups. A practical, sourced comparison for Windows clipboard users.",
+      "heading": "Clipora and Ditto: two ways to keep your copies.",
+      "kind": "comparison"
+    },
+    {
+      "file": "compare/clipboardfusion.html",
+      "path": "/compare/clipboardfusion",
+      "modified": "2026-10-29",
+      "title": "Clipora vs ClipboardFusion: Features & Workflow Compared",
+      "description": "Compare Clipora with ClipboardFusion Free and Pro: local history, pins, text cleanup, automation and optional sync. Includes official sources and clear limits.",
+      "heading": "Clipora and ClipboardFusion: choose your workflow.",
+      "kind": "comparison"
+    },
+    {
+      "file": "about.html",
+      "path": "/about",
+      "modified": "2026-10-29",
+      "title": "About Clipora — A Windows Clipboard Manager",
+      "description": "Learn what Clipora is built for, how its Windows clipboard library works and where to find release notes, privacy information and public support.",
+      "heading": "Made for the things you copy every day.",
+      "kind": "project"
+    },
+    {
+      "file": "changelog.html",
+      "path": "/changelog",
+      "modified": "2026-10-29",
+      "title": "Clipora Release Notes & Windows App Updates",
+      "description": "Read Clipora release notes, check the current published Windows package and learn how Store updates preserve your library and reach your computer.",
+      "heading": "What’s new in Clipora.",
+      "kind": "project"
+    },
+    {
+      "file": "compare.html",
+      "path": "/compare",
+      "modified": "2026-10-29",
+      "title": "Compare Windows Clipboard Managers | Clipora",
+      "description": "Compare Clipora with Windows clipboard history, Ditto and ClipboardFusion using sourced workflows, release baselines and practical limitations.",
+      "heading": "Find your clipboard fit.",
+      "kind": "hub"
+    },
+    {
+      "file": "tools.html",
+      "path": "/tools",
+      "modified": "2026-10-29",
+      "title": "Free Copy & Paste Text Tools in Your Browser | Clipora",
+      "description": "Clean up copied text with free browser-local tools. Paste as plain text or remove awkward line breaks with a preview, explicit copy and undo.",
+      "heading": "Small text fixes. No uploads.",
+      "kind": "hub"
+    }
+  ]
+}

@@ -1,12 +1,11 @@
 /* Repeatable website acceptance suite. Uses isolated profiles and synthetic input only. */
-function dependency(name, override) { return require(process.env[override] || name); }
-const pw = dependency('playwright','PLAYWRIGHT_MODULE');
+function dependency(name, override, fallback) { if(process.env[override])return require(process.env[override]);try{return require(name);}catch{return require(fallback);} }
+const pw = dependency('playwright','PLAYWRIGHT_MODULE','C:/Users/khokh/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
 const fs = require('fs'), path = require('path'), assert = require('node:assert/strict');
-const axe = dependency('axe-core','AXE_MODULE');
+const axe = dependency('axe-core','AXE_MODULE','E:/Work/Clipboard Studio/work/website-qa-tools/node_modules/axe-core');
 const base = process.env.QA_BASE_URL || 'http://127.0.0.1:8766';
 const out = path.resolve(process.env.QA_OUTPUT || 'qa-results/cross-browser'); fs.mkdirSync(out, { recursive: true });
-const routes = ['/', '/guide.html', '/privacy.html', '/support.html', '/press.html', '/404.html'];
-function canonical(href){const u=new URL(href);u.pathname=u.pathname.replace(/\/index\.html$/,'/').replace(/\.html$/,'');return u.href;}
+const routes = ['/', '/guide', '/privacy', '/support', '/press', '/404'];
 const results = [], coverage = { base, started: new Date().toISOString(), browsers: [], controls: {}, links: {}, external: [] };
 const engines = process.env.QA_ENGINES?.split(',') || ['chrome', 'webkit'];
 async function check(engine, name, fn) {
@@ -15,7 +14,7 @@ async function check(engine, name, fn) {
 }
 async function settle(page) { await page.evaluate(() => document.fonts.ready); }
 async function pause(page) { if (await page.locator('.motion-toggle').getAttribute('aria-pressed') !== 'true') await page.locator('.motion-toggle').click(); }
-async function go(page, route = '/') { const started=Date.now();await page.goto(base + route,{timeout:30000});(coverage.navigation||(coverage.navigation=[])).push({route,ms:Date.now()-started});await settle(page);await pause(page); }
+async function go(page, route = '/') { await page.goto(base + route); await settle(page); await pause(page); }
 async function noOverflow(page) { assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'Horizontal page overflow'); }
 async function scan(page, engine, name) {
   await page.addScriptTag({ content: axe.source });
@@ -148,15 +147,15 @@ for(const engine of engines){
         if(await link.evaluate(e=>!!e.closest('#main-nav')))await page.locator('.menu-toggle').click();
         if(await link.evaluate(e=>e.classList.contains('skip')))await link.focus();
         if(url.origin!==new URL(base).origin){await page.route(url.href, r=>r.fulfill({status:200,contentType:'text/html',body:'<title>External destination verified</title>'}));await link.click();await page.waitForURL(url.href);await page.unroute(url.href);}
-        else if(links[i].download){const downloadPromise=page.waitForEvent('download');await link.click();const d=await downloadPromise;assert.equal(await d.failure(),null);assert(d.suggestedFilename().endsWith('.png'));}
-        else {await link.click();await page.waitForURL(u=>canonical(u.href)===canonical(url.href));if(url.hash){assert(await page.locator(url.hash).count());if(url.hash==='#main')assert(await page.locator('#main').evaluate(e=>e===document.activeElement));}}
+        else if(links[i].download){const downloadPromise=page.waitForEvent('download');await link.click();const d=await downloadPromise;assert.equal(await d.failure(),null);assert(/\.(png|mp4|zip)$/.test(d.suggestedFilename()));}
+        else {await link.click();await page.waitForURL(url.href);if(url.hash){assert(await page.locator(url.hash).count());if(url.hash==='#main')assert(await page.locator('#main').evaluate(e=>e===document.activeElement));}}
       });
     }
     await check(engine,'Motion running, paused, resumed; scroll reveals and progress',async()=>{
       await go(page);await page.setViewportSize({width:1440,height:1000});await page.locator('.motion-toggle').click();
-      assert.equal(await page.locator('.note').first().evaluate(e=>getComputedStyle(e).animationPlayState),'running');
-      for(const selector of ['.note','.picture','.link-card','.shortcut','.search-pill i','.privacy-lock','.final-cta svg']) assert.notEqual(await page.locator(selector).first().evaluate(e=>getComputedStyle(e).animationName),'none');
-      await page.locator('.motion-toggle').click();assert.equal(await page.locator('.note').first().evaluate(e=>getComputedStyle(e).animationPlayState),'paused');
+      assert.equal(await page.locator('.search-pill i').first().evaluate(e=>getComputedStyle(e).animationPlayState),'running');
+      for(const selector of ['.search-pill i','.privacy-lock','.final-cta svg']) assert.notEqual(await page.locator(selector).first().evaluate(e=>getComputedStyle(e).animationName),'none');
+      await page.locator('.motion-toggle').click();assert.equal(await page.locator('.search-pill i').first().evaluate(e=>getComputedStyle(e).animationPlayState),'paused');
       await page.evaluate(()=>Promise.all(document.getAnimations().map(a=>a.ready)));
       const times=await page.evaluate(()=>document.getAnimations().filter(a=>a instanceof CSSAnimation).map(a=>a.currentTime));
       await page.waitForTimeout(120);
@@ -168,7 +167,7 @@ for(const engine of engines){
     });
     await check(engine,'Reduced motion initial, preference changes and explicit resume',async()=>{
       await page.emulateMedia({reducedMotion:'reduce'});await page.reload();assert.equal(await page.locator('.motion-toggle').getAttribute('aria-pressed'),'true');
-      await page.locator('.motion-toggle').click();assert.equal(await page.locator('.note').first().evaluate(e=>getComputedStyle(e).animationPlayState),'running');assert.notEqual(await page.locator('.note').first().evaluate(e=>getComputedStyle(e).animationName),'none');
+      await page.locator('.motion-toggle').click();assert.equal(await page.locator('.search-pill i').first().evaluate(e=>getComputedStyle(e).animationPlayState),'running');assert.notEqual(await page.locator('.search-pill i').first().evaluate(e=>getComputedStyle(e).animationName),'none');
       await page.evaluate(()=>{window.qaMotionChanges=0;matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',()=>window.qaMotionChanges++);});
       await page.emulateMedia({reducedMotion:'no-preference'});await page.waitForFunction(()=>window.qaMotionChanges===1);assert.equal(await page.locator('.motion-toggle').getAttribute('aria-pressed'),'false');await page.emulateMedia({reducedMotion:'reduce'});await page.waitForFunction(()=>window.qaMotionChanges===2);assert.equal(await page.locator('.motion-toggle').getAttribute('aria-pressed'),'true');
       await page.emulateMedia({reducedMotion:'no-preference'});
@@ -177,11 +176,11 @@ for(const engine of engines){
       await go(page);await page.emulateMedia({forcedColors:'active'});await page.locator('#clip-search').focus();assert.notEqual(await page.locator('#clip-search').evaluate(e=>getComputedStyle(e).outlineStyle),'none');await page.screenshot({path:path.join(out,`${engine}-forced-colors.png`)});await page.emulateMedia({forcedColors:'none'});
     });
     await check(engine,'Fallback fonts, blocked script and images remain navigable',async()=>{
-      await page.route('**/*.ttf',r=>r.abort());await page.route('**/*.png',r=>r.abort());await go(page);await page.setViewportSize({width:320,height:568});await noOverflow(page);assert(await page.locator('.hero-actions .button').isVisible());await page.unroute('**/*.ttf');await page.unroute('**/*.png');
+      await page.route('**/*.woff2',r=>r.abort());await page.route('**/*.png',r=>r.abort());await go(page);await page.setViewportSize({width:320,height:568});await noOverflow(page);assert(await page.locator('.hero-actions .button').isVisible());await page.unroute('**/*.woff2');await page.unroute('**/*.png');
     });
     await check(engine,'No JavaScript mobile navigation and reading',async()=>{
       const nc=await browser.newContext({javaScriptEnabled:false,viewport:{width:320,height:568}}),np=await nc.newPage();
-      for(const route of routes){await np.goto(base+route);await noOverflow(np);assert(await np.locator('#main-nav').isVisible());assert(await np.locator('.menu-toggle').isHidden());await np.locator('#main-nav a[href="/guide.html"]').click();await np.waitForURL(u=>canonical(u.href)===canonical(base+'/guide.html'));}await nc.close();
+      for(const route of routes){await np.goto(base+route);await noOverflow(np);assert(await np.locator('#main-nav').isVisible());assert(await np.locator('.menu-toggle').isHidden());await np.locator('#main-nav a[href="/guide"]').click();await np.waitForURL(base+'/guide');}await nc.close();
     });
     await check(engine,'Screenshot composition variants and native image assets',async()=>{
       await page.setViewportSize({width:1366,height:768});

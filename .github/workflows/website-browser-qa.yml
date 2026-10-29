@@ -11,13 +11,13 @@ jobs:
     if: ${{ !contains(github.event.head_commit.message, '[edge-only]') }}
     name: Actual Safari on macOS
     runs-on: macos-26
-    timeout-minutes: 25
+    timeout-minutes: 35
     defaults:
       run:
         working-directory: website-qa
     env:
       QA_BROWSER: safari
-      QA_BASE_URL: https://clipora.deltabits.in
+      QA_BASE_URL: http://127.0.0.1:8766
       QA_OUTPUT: qa-results/safari
       SE_AVOID_STATS: 'true'
     steps:
@@ -31,7 +31,12 @@ jobs:
           sw_vers
           safaridriver --version
           sudo safaridriver --enable
+      - name: Serve checked static build
+        run: node serve.cjs > preview.log 2>&1 &
       - run: npm run test:webdriver
+      - run: node qa-growth-webdriver.cjs
+        env:
+          QA_OUTPUT: qa-results/safari-growth
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -42,13 +47,13 @@ jobs:
     if: ${{ !contains(github.event.head_commit.message, '[safari-only]') }}
     name: Actual Microsoft Edge on Windows
     runs-on: windows-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
     defaults:
       run:
         working-directory: website-qa
     env:
       QA_ENGINES: msedge
-      QA_BASE_URL: https://clipora.deltabits.in
+      QA_BASE_URL: http://127.0.0.1:8766
       QA_OUTPUT: qa-results/edge
     steps:
       - uses: actions/checkout@v4
@@ -58,7 +63,12 @@ jobs:
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Update isolated runner to current stable Microsoft Edge
         run: npx playwright install msedge
+      - name: Serve checked static build
+        run: Start-Process node -ArgumentList 'serve.cjs' -WindowStyle Hidden
       - run: npm run test:playwright
+      - run: node qa-growth.cjs
+        env:
+          QA_OUTPUT: qa-results/edge-growth
       - uses: actions/upload-artifact@v4
         if: always()
         with:
