@@ -27,11 +27,11 @@ const isFocus=async s=>js(s=>document.activeElement===document.querySelector(s),
 async function check(name,fn){try{await fn();results.push({name,pass:true});}catch(e){results.push({name,pass:false,error:e.message});console.log(`FAIL ${name}: ${e.message.slice(0,700)}`);try{fs.writeFileSync(path.join(out,`failure-${results.length}.png`),await d.takeScreenshot(),'base64');}catch{}}}
 async function screenshot(name){fs.writeFileSync(path.join(out,`${name}.png`),await d.takeScreenshot(),'base64');}
 async function navigate(url){
-  const current=new URL(await d.getCurrentUrl()),destination=new URL(canonical(url));
-  const token=await js(()=>{window.qaNavigationToken=Math.random().toString();return window.qaNavigationToken;});
+  const current=new URL((await d.getCurrentUrl())||'about:blank'),destination=new URL(canonical(url));
+  const token=current.origin==='null'?null:await js(()=>{window.qaNavigationToken=Math.random().toString();return window.qaNavigationToken;});
   if(current.href===destination.href)await d.navigate().refresh();
   else {await d.get(destination.href);if(current.origin===destination.origin&&current.pathname===destination.pathname&&current.search===destination.search)await d.navigate().refresh();}
-  await wait(async()=>canonical(await d.getCurrentUrl())===canonical(url)&&await js(token=>document.readyState==='complete'&&window.qaNavigationToken!==token,token));
+  await wait(async()=>{const state=await js(()=>({url:document.URL,ready:document.readyState,token:window.qaNavigationToken}));return state.url.startsWith('http')&&canonical(state.url)===canonical(url)&&state.ready==='complete'&&(!token||state.token!==token);});
 }
 async function go(route='/'){
   await navigate(base+route);
@@ -120,7 +120,7 @@ async function pages(){
       await go(route);let a=(await all('a'))[i];
       if(await js(e=>!!e.closest('#main-nav'),a))await click('.menu-toggle');
       await js(e=>{if(e.classList.contains('skip')){e.focus();}else e.scrollIntoView({block:'center',behavior:'instant'});},a);
-      const href=links[route][i].href,url=new URL(href,base+route);
+      const href=links[route][i].href,url=new URL(href,await d.getCurrentUrl());
       if(url.origin===new URL(base).origin&&!links[route][i].download){
         const from=new URL(await d.getCurrentUrl()),destination=new URL(canonical(url.href));
         const changesDocument=from.pathname!==url.pathname||from.search!==url.search||!url.hash;
