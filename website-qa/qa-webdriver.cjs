@@ -17,7 +17,9 @@ const value=s=>el(s).then(e=>e.getAttribute('value'));
 const attr=(s,n)=>el(s).then(e=>e.getAttribute(n));
 const text=s=>el(s).then(e=>e.getText());
 const count=async s=>(await all(s)).length;
-const wait=fn=>d.wait(fn,10000);
+// Safari can briefly lose the old document handle during a cross-document commit.
+// Retry only the observation, never the user action; a genuinely closed window still times out.
+const wait=fn=>d.wait(async()=>{try{return await fn();}catch(e){if(e.name==='NoSuchWindowError')return false;throw e;}},10000);
 const focus=s=>js(s=>document.querySelector(s).focus(),s);
 const click=async s=>{const e=await el(s);await js(e=>e.scrollIntoView({block:'center',behavior:'instant'}),e);await e.click();};
 const keys=async(s,...k)=>(await el(s)).sendKeys(...k);
