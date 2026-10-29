@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   const root=document.documentElement, reduced=matchMedia('(prefers-reduced-motion: reduce)'), motion=document.querySelector('.motion-toggle');
-  root.classList.add('js-enabled'); let paused=reduced.matches;
+  root.classList.add('js-enabled');root.classList.remove('js-pending'); let paused=reduced.matches;
   function setMotion(value){paused=value;root.classList.toggle('motion-paused',paused);root.classList.toggle('motion-allowed',!paused);if(motion){motion.setAttribute('aria-pressed',String(paused));motion.title=paused?'Resume website animations':'Pause website animations';motion.setAttribute('aria-label',`${paused?'Motion off':'Motion on'}. ${motion.title}`);motion.innerHTML=`<svg aria-hidden="true" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="${paused?'M5 3l7 5-7 5z':'M5 3v10M11 3v10'}"></path></svg><span>Motion ${paused?'off':'on'}</span>`;}}
   setMotion(paused);motion?.addEventListener('click',()=>setMotion(!paused));reduced.addEventListener('change',e=>setMotion(e.matches));
   let scrollFrame=0;window.addEventListener('scroll',()=>{if(scrollFrame)return;scrollFrame=requestAnimationFrame(()=>{const total=document.documentElement.scrollHeight-innerHeight;root.style.setProperty('--reading-progress',`${total>0?100*scrollY/total:0}%`);scrollFrame=0;});},{passive:true});

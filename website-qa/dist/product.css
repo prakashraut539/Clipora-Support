@@ -22,8 +22,8 @@ h2{letter-spacing:-.035em}h3{letter-spacing:-.025em}
 .picker-footer{min-height:62px}
 .picker[data-theme=dark]{--pbg:#000;--psurface:#1a1a1a;--pline:#383838}
 .destination textarea,.search-wrap input{scroll-margin-block:110px 24px}
-html:not(.js-enabled) .motion-toggle,html:not(.js-enabled) .menu-toggle{display:none}
-html:not(.js-enabled) .lab-grid,html:not(.js-enabled) .lab-controls,html:not(.js-enabled) .workspace-tabs{display:none}
+html:not(.js-enabled):not(.js-pending) .motion-toggle,html:not(.js-enabled):not(.js-pending) .menu-toggle{display:none}
+html:not(.js-enabled):not(.js-pending) .lab-grid,html:not(.js-enabled):not(.js-pending) .lab-controls,html:not(.js-enabled):not(.js-pending) .workspace-tabs{display:none}
 @media(max-width:760px){
   .menu-toggle{min-width:44px;min-height:44px;padding:0}
   .header-actions{gap:5px}
@@ -57,8 +57,8 @@ html:not(.js-enabled) .lab-grid,html:not(.js-enabled) .lab-controls,html:not(.js
   .site-footer nav{flex-wrap:wrap;gap:6px 18px;justify-content:flex-start}
   .site-footer nav a{min-height:44px;display:flex;align-items:center;font-size:12px}
   .document-sidebar a{min-height:44px;display:flex;align-items:center}
-  html:not(.js-enabled) .site-header{position:relative;flex-wrap:wrap}
-  html:not(.js-enabled) .site-header nav{position:static;display:flex;flex-wrap:wrap;order:3;width:100%;padding:0;box-shadow:none;border:0;gap:8px 24px}
+  html:not(.js-enabled):not(.js-pending) .site-header{position:relative;flex-wrap:wrap}
+  html:not(.js-enabled):not(.js-pending) .site-header nav{position:static;display:flex;flex-wrap:wrap;order:3;width:100%;padding:0;box-shadow:none;border:0;gap:8px 24px}
 }
 @media(max-width:370px){
   .hero h1{font-size:44px}
