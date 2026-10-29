@@ -15,7 +15,7 @@ async function check(engine, name, fn) {
 }
 async function settle(page) { await page.evaluate(() => document.fonts.ready); }
 async function pause(page) { if (await page.locator('.motion-toggle').getAttribute('aria-pressed') !== 'true') await page.locator('.motion-toggle').click(); }
-async function go(page, route = '/') { await page.goto(base + route); await settle(page); await pause(page); }
+async function go(page, route = '/') { const started=Date.now();await page.goto(base + route,{timeout:30000});(coverage.navigation||(coverage.navigation=[])).push({route,ms:Date.now()-started});await settle(page);await pause(page); }
 async function noOverflow(page) { assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'Horizontal page overflow'); }
 async function scan(page, engine, name) {
   await page.addScriptTag({ content: axe.source });
