@@ -31,6 +31,7 @@ button:disabled{cursor:not-allowed;opacity:.55}button:active:not(:disabled),.but
 @media(prefers-reduced-motion:reduce){.transfer-chip{display:none}.resource-card{transition:none}}
 .motion-paused .transfer-chip{display:none}
 .download-mobile button{min-height:44px}
+@media(max-width:760px){.hero-demo .pin-button{min-width:44px;width:44px}.hero-demo .demo-filters button,.hero-demo .segmented button,.hero-demo .destination-bottom button,.lesson-choices button,.lesson-panel button{min-width:44px;min-height:44px}.tool-options label{min-height:44px}}
 .hero-demo .picker,.hero-demo .destination{width:100%}
 .hero-demo .lab-top,.hero-demo .lab-controls{margin:0}
 .hero-demo .destination label{padding:0}
