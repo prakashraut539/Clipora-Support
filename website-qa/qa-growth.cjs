@@ -31,6 +31,17 @@ for(const engine of engines){let browser;
    }
   }
   await go(page,'/');await page.setViewportSize({width:1440,height:1000});
+  await check(engine,'Walkthrough centered, bounded and usable across portrait and landscape',async()=>{
+   for(const [w,h] of [[320,568],[390,844],[568,320],[768,1024],[1024,768],[1440,1000],[1920,1080]]){
+    await page.setViewportSize({width:w,height:h});
+    const box=await page.locator('.native-video').evaluate(e=>{const r=e.getBoundingClientRect(),v=e.querySelector('video').getBoundingClientRect(),title=e.querySelector('h2').getBoundingClientRect();return{left:r.left,right:r.right,vw:document.documentElement.clientWidth,videoLeft:v.left,videoRight:v.right,videoWidth:v.width,videoHeight:v.height,titleLeft:title.left};});
+    assert(box.left>=15,'Section needs a page gutter');assert(Math.abs(box.left-(box.vw-box.right))<2,'Section must stay centered');
+    assert(box.videoLeft>=box.left+15&&box.videoRight<=box.right-15,'Video must stay inside padded section');
+    assert(box.titleLeft>=box.left+15,'Heading needs its inner gutter');assert(box.videoWidth>150&&box.videoHeight>90,'Video remains usable');
+    assert(Math.abs(box.videoWidth/box.videoHeight-1.6)<.03,'Preserve media aspect ratio');await overflow(page);
+   }
+   await page.setViewportSize({width:1440,height:1000});
+  });
   await check(engine,'Clip button accessible names include all visible copy',async()=>{const names=await page.locator('.clip-main').evaluateAll(es=>es.map(e=>({name:e.getAttribute('aria-label')||e.textContent,title:e.querySelector('strong').textContent,detail:e.querySelector('small').textContent})));for(const n of names){assert(n.name.includes(n.title));assert(n.name.includes(n.detail));}});
   await check(engine,'Speech-control labels match visible text',async()=>{await page.addScriptTag({content:axe.source});for(let state=0;state<2;state++){const audit=await page.evaluate(()=>axe.run({runOnly:{type:'rule',values:['label-content-name-mismatch']}}));assert.deepEqual(audit.violations.map(v=>v.id),[]);await page.locator('.motion-toggle').click();}});
   for(const [lesson,clip] of [['find','meeting'],['pin','reply'],['plain','lesson']])await check(engine,`Guided ${lesson}: copy, find, paste, reset`,async()=>{
