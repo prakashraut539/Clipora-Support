@@ -31,7 +31,8 @@ for(const engine of engines){let browser;
    }
   }
   await go(page,'/');await page.setViewportSize({width:1440,height:1000});
-  await check(engine,'Clip button accessible names include all visible copy',async()=>{const names=await page.locator('.clip-main').evaluateAll(es=>es.map(e=>({name:e.getAttribute('aria-label'),title:e.querySelector('strong').textContent,detail:e.querySelector('small').textContent})));for(const n of names){assert(n.name.includes(n.title));assert(n.name.includes(n.detail));}});
+  await check(engine,'Clip button accessible names include all visible copy',async()=>{const names=await page.locator('.clip-main').evaluateAll(es=>es.map(e=>({name:e.getAttribute('aria-label')||e.textContent,title:e.querySelector('strong').textContent,detail:e.querySelector('small').textContent})));for(const n of names){assert(n.name.includes(n.title));assert(n.name.includes(n.detail));}});
+  await check(engine,'Speech-control labels match visible text',async()=>{await page.addScriptTag({content:axe.source});const audit=await page.evaluate(()=>axe.run({runOnly:{type:'rule',values:['label-content-name-mismatch']}}));assert.deepEqual(audit.violations.map(v=>v.id),[]);});
   for(const [lesson,clip] of [['find','meeting'],['pin','reply'],['plain','lesson']])await check(engine,`Guided ${lesson}: copy, find, paste, reset`,async()=>{
    await page.locator(`[data-lesson="${lesson}"]`).click();assert.equal(await page.locator(`[data-lesson="${lesson}"]`).getAttribute('aria-pressed'),'true');
    await page.locator('#lesson-copy').click();assert.equal(await page.locator('.clip-row').count(),6);assert(await page.locator('#lesson-copy').isDisabled());
