@@ -1,0 +1,63 @@
+name: Website browser QA
+on:
+  push:
+    branches: [codex/website-browser-qa-2026-10-29]
+    paths: ['.github/workflows/website-browser-qa.yml', 'website-qa/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  safari:
+    name: Actual Safari on macOS
+    runs-on: macos-26
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: website-qa
+    env:
+      QA_BROWSER: safari
+      QA_BASE_URL: https://clipora.deltabits.in
+      QA_OUTPUT: qa-results/safari
+      SE_AVOID_STATS: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Prepare isolated Safari automation
+        run: |
+          sw_vers
+          safaridriver --version
+          sudo safaridriver --enable
+      - run: npm run test:webdriver
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: safari-evidence
+          path: website-qa/qa-results
+          retention-days: 1
+  edge:
+    name: Actual Microsoft Edge on Windows
+    runs-on: windows-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: website-qa
+    env:
+      QA_ENGINES: msedge
+      QA_BASE_URL: https://clipora.deltabits.in
+      QA_OUTPUT: qa-results/edge
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run test:playwright
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: edge-evidence
+          path: website-qa/qa-results
+          retention-days: 1

@@ -1,0 +1,14 @@
+{
+  "devDependencies": {
+    "playwright": "1.64.1",
+    "selenium-webdriver": "4.51.0",
+    "axe-core": "4.14.0"
+  },
+  "private": true,
+  "name": "clipora-website-browser-qa",
+  "version": "1.0.0",
+  "scripts": {
+    "test:webdriver": "node qa-webdriver.cjs",
+    "test:playwright": "node qa-playwright.cjs"
+  }
+}
