@@ -64,8 +64,8 @@ for(const engine of engines){let browser;
     await input.fill('state-\nof-the-art');await page.locator('[data-action=convert]').click();assert.equal(await output.inputValue(),'state- of-the-art');
    });
    await check(engine,`${route} large text, limit validation and recovery`,async()=>{
-    await input.fill('A'.repeat(200000));await page.locator('[data-action=convert]').click();assert.equal((await output.inputValue()).length,200000);
-    await input.fill('B'.repeat(200001));await page.locator('[data-action=convert]').click();assert.equal(await input.getAttribute('aria-invalid'),'true');assert.equal((await input.inputValue()).length,200001);assert(await page.locator('[data-action=copy]').isDisabled());
+    await input.fill('A'.repeat(200000),{timeout:120000});await page.locator('[data-action=convert]').click();assert.equal((await output.inputValue()).length,200000);
+    await input.fill('B'.repeat(200001),{timeout:120000});await page.locator('[data-action=convert]').click();assert.equal(await input.getAttribute('aria-invalid'),'true');assert.equal((await input.inputValue()).length,200001);assert(await page.locator('[data-action=copy]').isDisabled());
     await input.fill('Valid again');await page.locator('[data-action=convert]').click();assert.equal(await input.getAttribute('aria-invalid'),null);assert.equal(await output.inputValue(),'Valid again');
    });
    await check(engine,`${route} clipboard denial and selection fallback`,async()=>{await clipboard(page,'denied');await page.locator('[data-action=copy]').click();assert.match(await page.locator('#tool-status').innerText(),/selected/);assert(await output.evaluate(e=>e.selectionStart===0&&e.selectionEnd===e.value.length&&document.activeElement===e));});

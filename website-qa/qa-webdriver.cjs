@@ -24,7 +24,7 @@ const keys=async(s,...k)=>(await el(s)).sendKeys(...k);
 const fill=async(s,v)=>{await (await el(s)).clear();if(v)await keys(s,v);else await js(s=>document.querySelector(s).dispatchEvent(new Event('input',{bubbles:true})),s);};
 const noOverflow=async()=>assert(await js(()=>document.documentElement.scrollWidth<=innerWidth+1),'Horizontal page overflow');
 const isFocus=async s=>js(s=>document.activeElement===document.querySelector(s),s);
-async function check(name,fn){try{await fn();results.push({name,pass:true});}catch(e){results.push({name,pass:false,error:e.message});console.log(`FAIL ${name}: ${e.message.slice(0,700)}`);try{fs.writeFileSync(path.join(out,`failure-${results.length}.png`),await d.takeScreenshot(),'base64');}catch{}}}
+async function check(name,fn){try{await fn();results.push({name,pass:true});}catch(e){results.push({name,pass:false,error:`${e.name}: ${e.message}`,stack:e.stack});console.log(`FAIL ${name}: ${e.name}: ${e.message.slice(0,700)}`);try{fs.writeFileSync(path.join(out,`failure-${results.length}.png`),await d.takeScreenshot(),'base64');}catch{}}}
 async function screenshot(name){fs.writeFileSync(path.join(out,`${name}.png`),await d.takeScreenshot(),'base64');}
 async function navigate(url){
   const current=new URL((await d.getCurrentUrl())||'about:blank'),destination=new URL(canonical(url));
@@ -120,6 +120,7 @@ async function pages(){
       await go(route);let a=(await all('a'))[i];
       if(await js(e=>!!e.closest('#main-nav'),a))await click('.menu-toggle');
       await js(e=>{if(e.classList.contains('skip')){e.focus();}else e.scrollIntoView({block:'center',behavior:'instant'});},a);
+      await d.executeAsyncScript('const e=arguments[0],done=arguments[arguments.length-1];let previous=null;function frame(){const r=e.getBoundingClientRect(),now=[r.x,r.y,r.width,r.height].join();if(now===previous)done(true);else{previous=now;requestAnimationFrame(frame);}}requestAnimationFrame(frame);',a);
       const href=links[route][i].href,url=new URL(href,await d.getCurrentUrl());
       if(url.origin===new URL(base).origin&&!links[route][i].download){
         const from=new URL(await d.getCurrentUrl()),destination=new URL(canonical(url.href));
