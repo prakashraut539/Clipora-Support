@@ -54,6 +54,8 @@ jobs:
         with:
           node-version: '24'
       - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Update isolated runner to current stable Microsoft Edge
+        run: npx playwright install msedge
       - run: npm run test:playwright
       - uses: actions/upload-artifact@v4
         if: always()

@@ -26,8 +26,15 @@ const noOverflow=async()=>assert(await js(()=>document.documentElement.scrollWid
 const isFocus=async s=>js(s=>document.activeElement===document.querySelector(s),s);
 async function check(name,fn){try{await fn();results.push({name,pass:true});}catch(e){results.push({name,pass:false,error:e.message});console.log(`FAIL ${name}: ${e.message.slice(0,700)}`);try{fs.writeFileSync(path.join(out,`failure-${results.length}.png`),await d.takeScreenshot(),'base64');}catch{}}}
 async function screenshot(name){fs.writeFileSync(path.join(out,`${name}.png`),await d.takeScreenshot(),'base64');}
+async function navigate(url){
+  const current=new URL(await d.getCurrentUrl()),destination=new URL(canonical(url));
+  const token=await js(()=>{window.qaNavigationToken=Math.random().toString();return window.qaNavigationToken;});
+  if(current.href===destination.href)await d.navigate().refresh();
+  else {await d.get(destination.href);if(current.origin===destination.origin&&current.pathname===destination.pathname&&current.search===destination.search)await d.navigate().refresh();}
+  await wait(async()=>canonical(await d.getCurrentUrl())===canonical(url)&&await js(token=>document.readyState==='complete'&&window.qaNavigationToken!==token,token));
+}
 async function go(route='/'){
-  await d.get(base+route);await wait(async()=>await js(()=>document.readyState==='complete'));
+  await navigate(base+route);
   await d.executeAsyncScript('const done=arguments[arguments.length-1];document.fonts.ready.then(()=>done(true));');
   await js(()=>{window.qaErrors=[];addEventListener('error',e=>window.qaErrors.push(e.message));addEventListener('unhandledrejection',e=>window.qaErrors.push(String(e.reason)));});
   if(await attr('.motion-toggle','aria-pressed')!=='true')await click('.motion-toggle');
@@ -114,7 +121,13 @@ async function pages(){
       if(await js(e=>!!e.closest('#main-nav'),a))await click('.menu-toggle');
       await js(e=>{if(e.classList.contains('skip')){e.focus();}else e.scrollIntoView({block:'center',behavior:'instant'});},a);
       const href=links[route][i].href,url=new URL(href,base+route);
-      if(url.origin===new URL(base).origin&&!links[route][i].download){await a.click();await wait(async()=>canonical(await d.getCurrentUrl())===canonical(url.href));if(url.hash){assert(await js(hash=>!!document.querySelector(hash),url.hash));if(url.hash==='#main')assert(await isFocus('#main'));}}
+      if(url.origin===new URL(base).origin&&!links[route][i].download){
+        const from=new URL(await d.getCurrentUrl()),destination=new URL(canonical(url.href));
+        const changesDocument=from.pathname!==url.pathname||from.search!==url.search||!url.hash;
+        const token=await js(()=>{window.qaNavigationToken=Math.random().toString();return window.qaNavigationToken;});
+        await a.click();await wait(async()=>canonical(await d.getCurrentUrl())===canonical(url.href)&&await js((token,changes)=>document.readyState==='complete'&&(!changes||window.qaNavigationToken!==token),token,changesDocument));
+        if(url.hash){assert(await js(hash=>!!document.querySelector(hash),url.hash));if(url.hash==='#main')assert(await isFocus('#main'));}
+      }
       else {await js(e=>{window.qaLink=null;e.addEventListener('click',event=>{event.preventDefault();window.qaLink={href:e.href,download:e.hasAttribute('download')};},{once:true});},a);await a.click();const captured=await js(()=>window.qaLink);assert.equal(captured.href,url.href);assert.equal(captured.download,links[route][i].download);}
     });
     errors.push(...await js(()=>window.qaErrors||[]));
@@ -133,7 +146,7 @@ async function pages(){
       const times=()=>js(()=>document.getAnimations().filter(a=>a instanceof CSSAnimation).map(a=>a.currentTime));const t=await times();await new Promise(r=>setTimeout(r,150));assert.deepEqual(await times(),t);assert.equal(await js(()=>getComputedStyle(document.querySelector('.button')).transitionDuration),'0s');
       await click('.motion-toggle');await js(()=>document.querySelector('.final-cta').scrollIntoView({behavior:'instant'}));await wait(()=>js(()=>parseFloat(document.documentElement.style.getPropertyValue('--reading-progress'))>80));await js(()=>document.querySelector('.privacy-copy').scrollIntoView({behavior:'instant'}));await wait(()=>js(()=>document.querySelector('.privacy-copy').classList.contains('is-visible')));
     });
-    await check('Native image composition helper variants',async()=>{for(const variant of ['quick','library','pins','appearance','unknown']){await d.get(base+'/store-shot.html?view='+variant);assert(await text('#headline'));await wait(()=>js(()=>{const e=document.querySelector('#view');return e.complete&&e.naturalWidth>0;}));}});
+    await check('Native image composition helper variants',async()=>{for(const variant of ['quick','library','pins','appearance','unknown']){await navigate(base+'/store-shot.html?view='+variant);assert(await text('#headline'));await wait(()=>js(()=>{const e=document.querySelector('#view');return e.complete&&e.naturalWidth>0;}));}});
     await check('Nested missing URL retains branded navigation and assets',async()=>{await go('/qa-missing/deep-page');assert.match(await text('h1'),/lost|find|404|wandering/i);assert(await js(()=>document.styleSheets.length>0));await click('.brand');assert.equal(await d.getCurrentUrl(),base+'/');});
     await check('No captured page errors',async()=>assert.deepEqual(errors,[]));
     await go();await size(1440,1000);await screenshot('final-hero');await js(()=>document.querySelector('#demo-picker').scrollIntoView({block:'center',behavior:'instant'}));await screenshot('final-demo');
